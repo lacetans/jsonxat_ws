@@ -22,5 +22,5 @@ serveis/static/pylons.css
 serveis/static/pyramid-small.png
 serveis/static/pyramid.png
 serveis/static/transparent.gif
-serveis/templates/feedback.mako
+serveis/templates/jsonxat.mako
 serveis/templates/mytemplate.pt

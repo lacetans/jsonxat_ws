@@ -10,8 +10,10 @@ def main(global_config, **settings):
     """
     settings['mako.directories'] = os.path.join(here, 'templates')
     my_session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
-    
+
     config = Configurator( settings=settings, session_factory=my_session_factory )
+    config.include('pyramid_mako')
+    config.include('pyramid_chameleon')
     config.add_renderer('jsonp', JSONP(param_name='callback'))
     config.add_static_view('static', 'static', cache_max_age=3600)
     
@@ -23,10 +25,6 @@ def main(global_config, **settings):
     config.add_route('xat_get_canals_ws', '/xat_get_canals_ws')
     config.add_route('xat_get_canal_ws', '/xat_get_canal_ws')
     config.add_route('xat_set_missatge_ws', '/xat_set_missatge_ws')
-    
-    # feedback service for apps
-    config.add_route('feedback', '/feedback')
-    config.add_route('set_report_ws', '/set_report_ws')
     
     config.scan()
     return config.make_wsgi_app()

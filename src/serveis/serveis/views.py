@@ -5,7 +5,7 @@ import pymongo
 
 STORAGE_FILENAME = "/var/wwwdata/xat.txt"
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
+@view_config(route_name='home', renderer='jsonxat.mako')
 def my_view(request):
     return {'project': 'Serveis/JsonXat'}
 
@@ -96,56 +96,4 @@ def xat_set_missatge_ws(request):
 		"status":True,
 		"missatge":"missatge enregistrat correctament"
     }
-    
-"""
-    FEEDBACK APP
-"""
-# https://pythonhosted.org/pyramid_simpleform/
-from formencode import Schema, validators
-from pyramid_simpleform import Form
-from pyramid_simpleform.renderers import FormRenderer
-
-class FeedbackSchema(Schema):
-    #http://www.formencode.org/en/latest/modules/validators.html
-    allow_extra_fields = True
-    filter_extra_fields = True
-    name = validators.UnicodeString(max=5, min=1)
-    value = validators.Int(min=1, max=1000)
-    # TODO: textarea?
-    type = validators.OneOf(["bug/error","improvement/millora"])
-
-class Feedback(object):
-    pass
-
-@view_config(route_name='feedback', renderer='feedback.mako')
-def feedback(request):
-    #form = Form( request, defaults={"name":"..."}, schema=FeedbackSchema() )
-    form = Form( request, schema=FeedbackSchema() )
-    #print dir(MyRenderer(form))
-    if form.validate():
-        obj = form.bind( Feedback() )
-        #...
-        print obj.__dict__
-        return {"message":"Feedback recorded successfuly"}
-    return {"message":"Please fill the form","renderer":FormRenderer(form) }
-
-@view_config(route_name='set_report_ws', renderer='json')
-def set_report_ws(request):
-    try:
-        client = pymongo.MongoClient()
-        db = client.vm_feedback
-        cols = db.collection_names()
-        
-        idata = request.json_body
-        return { "status":False, "message":"Service not implemented yet" }
-        
-    except Exception as e:
-        print type(e).__name__
-        print e.args
-        return {"service":"vm_feedback",
-		"status":False,
-		"message":"ERROR: " + type(e).__name__ + " args=" + str(e.args)
-        }
-    
-    return {"status":True,"collections":cols}
 
